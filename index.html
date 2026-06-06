@@ -1,13 +1,63 @@
-<! DOCTYPE html>
-<html>
-  <head>
-  <title>Ryvard Lab</title>
-    <style>
-body{
-      background:black;
-      </style>
-  </head>
-    <body>
-  <p>website testing Ryvard</p>
-    </body>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Testing Ryvard</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    .card {
+      background: rgba(255,255,255,0.1);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    button {
+      background: #fff;
+      color: #764ba2;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Halo 👋</h1>
+    <p>Web buat testing code aja</p>
+    <p id="jam"></p>
+    <button onclick="sapa()">Klik aku</button>
+  </div>
+
+  <script>
+    function sapa() {
+      alert('Makasih udah klik! Kodenya jalan kan? ');
+    }
+    
+    function updateJam() {
+      const now = new Date();
+      document.getElementById('jam').innerText = now.toLocaleTimeString('id-ID');
+    }
+    updateJam();
+    setInterval(updateJam, 1000);
+  </script>
+</body>
 </html>
