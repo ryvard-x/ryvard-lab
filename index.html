@@ -1,63 +1,91 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Web Testing Ryvard</title>
-  <style>
-    body {
-      font-family: 'Times New Roman', sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      text-align: center;
-    }
-    .card {
-      background: rgba(255,255,255,0.1);
-      padding: 40px;
-      border-radius: 20px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    }
-    button {
-      background: #fff;
-      color: #764ba2;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 20px;
-      transition: 0.3s;
-    }
-    button:hover {
-      transform: scale(1.05);
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyboard ASMR</title>
+<style>
+  :root { --bg: #0f1117; --accent: #7c9cff; }
+  body {
+    margin: 0;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(1200px 800px at 50% 50%, #1a1f2e 0%, var(--bg) 100%);
+    font-family: system-ui, sans-serif;
+    color: #e6e9f2;
+    overflow: hidden;
+  }
+  .card {
+    text-align: center;
+    padding: 32px;
+    border-radius: 24px;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  }
+  h1 { margin: 0 0 8px; font-size: 20px; }
+  p { margin: 0; opacity: 0.7; font-size: 14px; }
+  .ripple {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: scale(0);
+    pointer-events: none;
+    animation: pop 600ms ease-out forwards;
+  }
+  @keyframes pop {
+    to { transform: scale(18); opacity: 0; }
+  }
+</style>
 </head>
 <body>
   <div class="card">
-    <h1>Halo 👋</h1>
-    <p>Web buat testing code aja</p>
-    <p id="jam"></p>
-    <button onclick="sapa()">Klik aku</button>
+    <h1>⌨️ Keyboard ASMR</h1>
+    <p>Press any key to play</p>
   </div>
 
-  <script>
-    function sapa() {
-      alert('Makasih udah klik! Kodenya jalan kan? ');
-    }
-    
-    function updateJam() {
-      const now = new Date();
-      document.getElementById('jam').innerText = now.toLocaleTimeString('id-ID');
-    }
-    updateJam();
-    setInterval(updateJam, 1000);
-  </script>
+<script>
+  // Simple WebAudio click sound
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  
+  function playClick() {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = 800 + Math.random() * 400; // randomize pitch
+    gain.gain.setValueAtTime(0.15, audioCtx.resume ? audioCtx.currentTime : 0);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.1);
+  }
+
+  function spawnRipple(e) {
+    const r = document.createElement('div');
+    r.className = 'ripple';
+    r.style.left = e.clientX - 10 + 'px';
+    r.style.top = e.clientY - 10 + 'px';
+    document.body.appendChild(r);
+    setTimeout(() => r.remove(), 600);
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (audioCtx.state === 'suspended') audioCtx.resume(); // needed on first click
+    playClick();
+    // put ripple in center if no mouse pos
+    spawnRipple({clientX: window.innerWidth/2 + (Math.random()-0.5)*200, 
+                 clientY: window.innerHeight/2 + (Math.random()-0.5)*200});
+  });
+
+  // also click anywhere for mouse users
+  window.addEventListener('click', (e) => {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    playClick();
+    spawnRipple(e);
+  });
+</script>
 </body>
 </html>
